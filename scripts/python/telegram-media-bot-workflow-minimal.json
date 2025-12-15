@@ -1,0 +1,545 @@
+{
+  "name": "Telegram Media Downloader Bot",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "telegram-trigger",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "telegram-webhook",
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const message = $input.item.json.message;\nconst text = message.text || '';\n\nif (!text || text.trim().length === 0) {\n  return {\n    error: true,\n    message: 'Сообщение пустое. Отправьте ссылку на контент.',\n    chatId: message.chat.id\n  };\n}\n\nfunction extractUrl(text) {\n  const urlRegex = /(https?:\\/\\/[^\\s]+)/g;\n  const matches = text.match(urlRegex);\n  return matches ? matches[0] : null;\n}\n\nfunction isValidUrl(url) {\n  try {\n    const urlObj = new URL(url);\n    return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';\n  } catch {\n    return false;\n  }\n}\n\nfunction detectPlatform(url) {\n  const lowerUrl = url.toLowerCase();\n  if (lowerUrl.includes('youtube.com') || lowerUrl.includes('youtu.be')) {\n    return 'youtube';\n  } else if (lowerUrl.includes('instagram.com')) {\n    return 'instagram';\n  } else if (lowerUrl.includes('twitter.com') || lowerUrl.includes('x.com')) {\n    return 'twitter';\n  } else if (lowerUrl.includes('music.yandex')) {\n    return 'yandex_music';\n  } else if (lowerUrl.includes('tiktok.com') || lowerUrl.includes('vm.tiktok.com')) {\n    return 'tiktok';\n  }\n  return 'unknown';\n}\n\nconst url = extractUrl(text);\n\nif (!url) {\n  return {\n    error: true,\n    message: 'Не найдена ссылка в сообщении. Отправьте ссылку на контент.',\n    chatId: message.chat.id\n  };\n}\n\nif (!isValidUrl(url)) {\n  return {\n    error: true,\n    message: 'Неверный формат URL',\n    chatId: message.chat.id\n  };\n}\n\nconst platform = detectPlatform(url);\n\nreturn {\n  url: url,\n  platform: platform,\n  chatId: message.chat.id,\n  messageId: message.message_id,\n  error: false\n};"
+      },
+      "id": "code-parser",
+      "name": "Code - Parse URL",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.error }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-error-check",
+      "name": "IF - Check Error",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.message }}",
+        "additionalFields": {}
+      },
+      "id": "send-error-message",
+      "name": "Send Error Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [850, 200],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "rules",
+        "value": "={{ $json.platform }}",
+        "rules": {
+          "values": [
+            {
+              "value": "youtube"
+            },
+            {
+              "value": "instagram"
+            },
+            {
+              "value": "tiktok"
+            },
+            {
+              "value": "twitter"
+            },
+            {
+              "value": "yandex_music"
+            }
+          ]
+        }
+      },
+      "id": "switch-platform",
+      "name": "Switch - Platform",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [850, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://172.18.0.7:8022/api/youtube/download",
+        "authentication": "none",
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "={{ {\"url\": $json.url, \"chat_id\": $json.chatId, \"platform\": $json.platform} }}"
+      },
+      "id": "http-youtube",
+      "name": "HTTP Request - YouTube",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1050, 100]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://172.18.0.7:8022/api/instagram/download",
+        "authentication": "none",
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "={{ {\"url\": $json.url, \"chat_id\": $json.chatId, \"platform\": $json.platform} }}"
+      },
+      "id": "http-instagram",
+      "name": "HTTP Request - Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1050, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://172.18.0.7:8022/api/tiktok/download",
+        "authentication": "none",
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "={{ {\"url\": $json.url, \"chat_id\": $json.chatId, \"platform\": $json.platform} }}"
+      },
+      "id": "http-tiktok",
+      "name": "HTTP Request - TikTok",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://172.18.0.8:6025/api/twitter/download",
+        "authentication": "none",
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "={{ {\"url\": $json.url, \"chat_id\": $json.chatId, \"platform\": $json.platform, \"type\": \"video\"} }}"
+      },
+      "id": "http-twitter",
+      "name": "HTTP Request - Twitter",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1050, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://172.18.0.9:6026/api/yandex-music/download",
+        "authentication": "none",
+        "sendBody": true,
+        "bodyContentType": "json",
+        "jsonBody": "={{ {\"url\": $json.url, \"chat_id\": $json.chatId, \"platform\": $json.platform} }}"
+      },
+      "id": "http-yandex-music",
+      "name": "HTTP Request - Yandex.Music",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1050, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.item.json || $json;\nconst platform = $json.platform || data.platform || null;\nconst baseChatId = $json.chatId || $json.chat_id || data.chat_id || data.chatId;\n\nif (data.error === true || data.error === 'true' || data.success === false || data.success === 'false' || (data.statusCode && data.statusCode >= 400)) {\n  return {\n    json: {\n      error: true,\n      message: data.message || data.error || 'Ошибка при получении контента',\n      chatId: baseChatId\n    }\n  };\n}\n\nconst isSuccess = data.success === true || data.success === 'true' || data.status === 'success' || data.statusCode === 200 || (data.statusCode >= 200 && data.statusCode < 300) || data.file_path || data.file_url || data.url || data.download_url || (data.data && (data.data.file_path || data.data.url));\n\nif (!isSuccess) {\n  return {\n    json: {\n      error: true,\n      message: 'Не удалось получить медиа-файл',\n      chatId: baseChatId\n    }\n  };\n}\n\nconst filePath = data.file_path || data.file_url || data.url || data.download_url || (data.data && (data.data.file_path || data.data.url)) || null;\n\nlet metadata = data.metadata || {};\nif (!metadata && data.data) {\n  if (data.data.metadata) {\n    metadata = data.data.metadata;\n  } else if (!data.data.file_path) {\n    metadata = data.data;\n  }\n}\nif (!metadata) {\n  metadata = {};\n}\n\nlet contentType = data.type || data.file_type || data.media_type || data.content_type || null;\n\nif (!contentType && filePath) {\n  const extension = filePath.split('.').pop().toLowerCase().split('?')[0];\n  if (extension === 'mp4' || extension === 'webm' || extension === 'mov' || extension === 'avi' || extension === 'mkv' || extension === 'flv' || extension === 'm4v') {\n    contentType = 'video';\n  } else if (extension === 'mp3' || extension === 'm4a' || extension === 'ogg' || extension === 'wav' || extension === 'flac' || extension === 'aac') {\n    contentType = 'audio';\n  }\n}\n\nconst chatId = data.chat_id || data.chatId || baseChatId || null;\nconst textContent = data.text || data.message || data.content || metadata.text || null;\n\nif (filePath) {\n  const lowerPath = filePath.toLowerCase();\n  const isVideo = contentType === 'video' || lowerPath.indexOf('.mp4') >= 0 || lowerPath.indexOf('.webm') >= 0 || lowerPath.indexOf('.mov') >= 0 || lowerPath.indexOf('video') >= 0 || platform === 'youtube' || platform === 'instagram' || platform === 'tiktok';\n  const isAudio = contentType === 'audio' || lowerPath.indexOf('.mp3') >= 0 || lowerPath.indexOf('.m4a') >= 0 || lowerPath.indexOf('.ogg') >= 0 || lowerPath.indexOf('audio') >= 0 || platform === 'yandex_music';\n  \n  if (isVideo) {\n    return {\n      json: {\n        file_path: filePath,\n        chat_id: chatId,\n        platform: platform,\n        metadata: metadata,\n        content_type: 'video',\n        has_video: true,\n        has_audio: false,\n        has_text: false\n      }\n    };\n  }\n  \n  if (isAudio) {\n    return {\n      json: {\n        file_path: filePath,\n        chat_id: chatId,\n        platform: platform,\n        metadata: metadata,\n        content_type: 'audio',\n        has_video: false,\n        has_audio: true,\n        has_text: false\n      }\n    };\n  }\n  \n  if (platform === 'youtube' || platform === 'instagram' || platform === 'tiktok') {\n    return {\n      json: {\n        file_path: filePath,\n        chat_id: chatId,\n        platform: platform,\n        metadata: metadata,\n        content_type: 'video',\n        has_video: true,\n        has_audio: false,\n        has_text: false\n      }\n    };\n  }\n}\n\nif (textContent && !filePath) {\n  if (!chatId) {\n    return {\n      json: {\n        error: true,\n        message: 'Не удалось определить chat_id',\n        chatId: baseChatId\n      }\n    };\n  }\n  \n  let textToSend = String(textContent).trim();\n  if (textToSend.length > 4096) {\n    textToSend = textToSend.substring(0, 4093) + '...';\n  }\n  \n  return {\n    json: {\n      text_content: textToSend,\n      text: textToSend,\n      chat_id: String(chatId),\n      chatId: String(chatId),\n      platform: platform,\n      metadata: metadata,\n      content_type: 'text',\n      has_video: false,\n      has_audio: false,\n      has_text: true\n    }\n  };\n}\n\nreturn {\n  json: {\n    file_path: filePath,\n    chat_id: chatId,\n    platform: platform,\n    metadata: metadata,\n    content_type: contentType || 'unknown',\n    has_video: false,\n    has_audio: false,\n    has_text: false,\n    error: true,\n    message: 'Не удалось определить тип контента'\n  }\n};"
+      },
+      "id": "code-process-response",
+      "name": "Code - Process Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.error }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-process-error",
+      "name": "IF - Process Error",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1450, 200]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.has_video }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-has-video",
+      "name": "IF - Has Video",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1450, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.has_audio }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-has-audio",
+      "name": "IF - Has Audio",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1450, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.has_text }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "if-has-text",
+      "name": "IF - Has Text",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [1450, 500]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "video": "={{ $json.file_path }}",
+        "additionalFields": {
+          "caption": "={{ $json.metadata && $json.metadata.title ? $json.metadata.title : 'Видео' }}"
+        }
+      },
+      "id": "send-video",
+      "name": "Send Video",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1650, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id }}",
+        "audio": "={{ $json.file_path }}",
+        "additionalFields": {
+          "title": "={{ $json.metadata && $json.metadata.title ? $json.metadata.title : 'Аудио' }}",
+          "performer": "={{ $json.metadata && $json.metadata.artist ? $json.metadata.artist : '' }}"
+        }
+      },
+      "id": "send-audio",
+      "name": "Send Audio",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1650, 400],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chat_id || $json.chatId }}",
+        "text": "={{ $json.text || $json.text_content || 'Контент не найден' }}",
+        "additionalFields": {}
+      },
+      "id": "send-text",
+      "name": "Send Text Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1650, 500],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials",
+          "name": "Telegram Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId || $json.chat_id }}",
+        "text": "={{ $json.message || 'Ошибка при обработке запроса' }}",
+        "additionalFields": {}
+      },
+      "id": "send-processing-error",
+      "name": "Send Processing Error",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1650, 200],
+      "credentials": {
+        "telegramApi": {
+          "id": "telegram-credentials",
+          "name": "Telegram Bot"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code - Parse URL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Parse URL": {
+      "main": [
+        [
+          {
+            "node": "IF - Check Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Check Error": {
+      "main": [
+        [
+          {
+            "node": "Send Error Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch - Platform",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch - Platform": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - YouTube",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request - Instagram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request - TikTok",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request - Twitter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "HTTP Request - Yandex.Music",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - YouTube": {
+      "main": [
+        [
+          {
+            "node": "Code - Process Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Instagram": {
+      "main": [
+        [
+          {
+            "node": "Code - Process Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - TikTok": {
+      "main": [
+        [
+          {
+            "node": "Code - Process Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Twitter": {
+      "main": [
+        [
+          {
+            "node": "Code - Process Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - Yandex.Music": {
+      "main": [
+        [
+          {
+            "node": "Code - Process Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code - Process Response": {
+      "main": [
+        [
+          {
+            "node": "IF - Process Error",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF - Has Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Process Error": {
+      "main": [
+        [
+          {
+            "node": "Send Processing Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Has Video": {
+      "main": [
+        [
+          {
+            "node": "Send Video",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IF - Has Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Has Audio": {
+      "main": [
+        [
+          {
+            "node": "Send Audio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "IF - Has Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF - Has Text": {
+      "main": [
+        [
+          {
+            "node": "Send Text Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "versionId": "2"
+}
+

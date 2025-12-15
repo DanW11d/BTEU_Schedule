@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_background"
+    android:orientation="vertical">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="16dp">
+
+        <TextView
+            android:id="@+id/widget_day_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="ПОНЕДЕЛЬНИК"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/widget_refresh_button"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_refresh" 
+            android:contentDescription="Обновить"/>
+
+    </LinearLayout>
+
+    <!-- Content -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <ListView
+            android:id="@+id/widget_lessons_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            tools:listitem="@layout/widget_lesson_item" />
+
+        <TextView
+            android:id="@+id/widget_empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="Пар нет 🎉"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="16sp"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <!-- Footer / Navigation -->
+    <LinearLayout
+        android:id="@+id/widget_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
+
+        <ImageButton
+            android:id="@+id/widget_prev_day_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_chevron_left"
+            style="@style/Widget.App.Button.TextButton" 
+            android:contentDescription="Предыдущий день"/>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <TextView android:id="@+id/widget_day_pn" style="@style/WidgetAppTextViewDayOfWeek" android:text="ПН" />
+            <TextView android:id="@+id/widget_day_vt" style="@style/WidgetAppTextViewDayOfWeek" android:text="ВТ" />
+            <TextView android:id="@+id/widget_day_sr" style="@style/WidgetAppTextViewDayOfWeek" android:text="СР" />
+            <TextView android:id="@+id/widget_day_ct" style="@style/WidgetAppTextViewDayOfWeek" android:text="ЧТ" />
+            <TextView android:id="@+id/widget_day_pt" style="@style/WidgetAppTextViewDayOfWeek" android:text="ПТ" />
+            <TextView android:id="@+id/widget_day_sb" style="@style/WidgetAppTextViewDayOfWeek" android:text="СБ" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/widget_next_day_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_chevron_right"
+            style="@style/Widget.App.Button.TextButton" 
+            android-contentDescription="Следующий день"/>
+    </LinearLayout>
+
+</LinearLayout>

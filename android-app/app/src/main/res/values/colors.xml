@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Светлая тема -->
+    <color name="background_main">#F7F7F7</color>
+    <color name="surface_main">#FFFFFF</color>
+    <color name="text_primary">#000000</color>
+    <color name="text_secondary">#8A000000</color>
+    <color name="accent_primary">#007AFF</color>
+
+    <!-- Цвета для виджета (Светлая тема) -->
+    <color name="widget_text_secondary">#8A000000</color>
+    <color name="widget_text_highlight">#007AFF</color>
+</resources>

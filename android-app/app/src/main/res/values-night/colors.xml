@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ТЁМНАЯ ТЕМА -->
+    <!-- Основной фон экранов приложения -->
+    <color name="background_main">#262626</color>
+    
+    <!-- Поверхности (карточки, кнопки, списки, BottomNavigation, меню) -->
+    <color name="surface_main">#141414</color>
+    
+    <!-- Основной текст -->
+    <color name="text_primary">#FFFFFF</color>
+    
+    <!-- Вторичный текст: полупрозрачный белый -->
+    <color name="text_secondary">#B3FFFFFF</color>
+    
+    <!-- Акцентный цвет (без изменений) -->
+    <color name="accent_primary">#007AFF</color>
+
+    <!-- Цвета для виджета (Тёмная тема) -->
+    <color name="widget_text_secondary">#B3FFFFFF</color>
+    <color name="widget_text_highlight">#007AFF</color>
+</resources>

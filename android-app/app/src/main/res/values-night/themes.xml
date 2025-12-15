@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Тёмная тема для приложения с использованием Material Design 3 -->
+    <style name="Theme.BTEU_Schedule" parent="Theme.Material3.DayNight.NoActionBar">
+        
+        <!-- Основной фон приложения: #262626 -->
+        <item name="android:colorBackground">@color/background_main</item>
+        
+        <!-- Цвет поверхностей (карточки, кнопки, списки, BottomNavigation, меню): #141414 -->
+        <item name="colorSurface">@color/surface_main</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="colorSurfaceVariant">@color/surface_main</item>
+        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+        
+        <!-- Основной текст: #FFFFFF -->
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        
+        <!-- Вторичный текст: полупрозрачный белый -->
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        
+        <!-- Акцентный цвет (без изменений) -->
+        <item name="colorPrimary">@color/accent_primary</item>
+        <item name="colorOnPrimary">@color/text_primary</item>
+        <item name="colorPrimaryContainer">@color/accent_primary</item>
+        <item name="colorOnPrimaryContainer">@color/text_primary</item>
+        
+        <!-- Настройка для edge-to-edge -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>
+

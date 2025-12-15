@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A7.7.3: Кадр 1 - первая точка видна (opacity 1.0), остальные 0.3 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Точка 1: видна -->
+    <item
+        android:width="8dp"
+        android:height="8dp"
+        android:gravity="center">
+        <shape android:shape="oval">
+            <solid android:color="#4C6CFF" />
+        </shape>
+    </item>
+    <!-- Точка 2: полупрозрачная (30% opacity = #4D4C6CFF) -->
+    <item
+        android:width="8dp"
+        android:height="8dp"
+        android:gravity="center"
+        android:left="16dp">
+        <shape android:shape="oval">
+            <solid android:color="#4D4C6CFF" />
+        </shape>
+    </item>
+    <!-- Точка 3: полупрозрачная (30% opacity = #4D4C6CFF) -->
+    <item
+        android:width="8dp"
+        android:height="8dp"
+        android:gravity="center"
+        android:left="32dp">
+        <shape android:shape="oval">
+            <solid android:color="#4D4C6CFF" />
+        </shape>
+    </item>
+</layer-list>
+

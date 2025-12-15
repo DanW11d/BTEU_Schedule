@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A7.2: Основной фон виджета для светлой темы -->
+<!-- A7.3: Тени - Light: rgba(0,0,0,0.08), blur 18dp -->
+<!-- Light: #FFFFFF, radius 24dp, shadow + light stroke #E6ECF9 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- A7.3: Тень (18dp blur, 8% opacity) -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#14000000" /> <!-- A7.3: rgba(0,0,0,0.08) = 8% opacity -->
+            <corners android:radius="24dp" />
+        </shape>
+    </item>
+    <!-- Фон с обводкой -->
+    <!-- A7.3: blur 18dp -->
+    <item
+        android:bottom="18dp"
+        android:left="0dp"
+        android:right="0dp"
+        android:top="0dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" /> <!-- A7.2: Light: #FFFFFF -->
+            <corners android:radius="24dp" /> <!-- A7.2: radius 24dp -->
+            <stroke
+                android:width="1dp"
+                android:color="#E6ECF9" /> <!-- A7.2: light stroke #E6ECF9 -->
+        </shape>
+    </item>
+</layer-list>
+

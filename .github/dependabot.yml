@@ -1,0 +1,84 @@
+# Configuration for Dependabot version updates
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+  # Обновление Gradle зависимостей
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "danwi"
+    labels:
+      - "dependencies"
+      - "gradle"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    
+    # Группировка обновлений
+    groups:
+      android-dependencies:
+        patterns:
+          - "androidx.*"
+          - "com.android.*"
+          - "com.google.android.*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      kotlin-dependencies:
+        patterns:
+          - "org.jetbrains.kotlin.*"
+          - "kotlinx.*"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      network-dependencies:
+        patterns:
+          - "com.squareup.*"
+          - "com.google.code.gson"
+        update-types:
+          - "minor"
+          - "patch"
+      
+      testing-dependencies:
+        patterns:
+          - "junit.*"
+          - "org.mockito.*"
+          - "androidx.test.*"
+          - "app.cash.turbine"
+          - "com.google.truth"
+        update-types:
+          - "minor"
+          - "patch"
+    
+    # Игнорирование определенных зависимостей
+    ignore:
+      # Игнорируем alpha/beta версии
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+      # Игнорируем security-crypto alpha версии до релиза
+      - dependency-name: "androidx.security:security-crypto"
+        versions: ["1.1.0-alpha*"]
+    
+    # Pull request message
+    pull-request-branch-name:
+      separator: "-"
+
+  # Обновление GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    reviewers:
+      - "danwi"
+    labels:
+      - "dependencies"
+      - "github-actions"
+

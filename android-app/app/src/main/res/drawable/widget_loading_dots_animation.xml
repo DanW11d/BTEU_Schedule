@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A7.7.3: Анимация точек для состояния загрузки виджета -->
+<!-- A6.6: Три точки: по очереди changing opacity 0.3 → 1, duration 900ms, бесконечный цикл -->
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <!-- Кадр 1: первая точка видна -->
+    <item
+        android:drawable="@drawable/widget_loading_dots_frame1"
+        android:duration="300" />
+    <!-- Кадр 2: вторая точка видна -->
+    <item
+        android:drawable="@drawable/widget_loading_dots_frame2"
+        android:duration="300" />
+    <!-- Кадр 3: третья точка видна -->
+    <item
+        android:drawable="@drawable/widget_loading_dots_frame3"
+        android:duration="300" />
+</animation-list>
+

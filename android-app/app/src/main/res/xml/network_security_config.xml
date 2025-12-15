@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Конфигурация для продакшн API сервера -->
+    <domain-config cleartextTrafficPermitted="false">
+        <domain includeSubdomains="true">api.bteu-schedule.by</domain>
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </domain-config>
+    
+    <!-- Разрешаем HTTP (cleartext) для локальных IP адресов -->
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- Локальный IP адрес сервера -->
+        <domain includeSubdomains="false">192.168.1.25</domain>
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">127.0.0.1</domain>
+        <!-- Для эмулятора -->
+        <domain includeSubdomains="false">10.0.2.2</domain>
+        <!-- Стандартные локальные IP диапазоны -->
+        <domain includeSubdomains="false">192.168.0.0</domain>
+        <domain includeSubdomains="false">192.168.1.0</domain>
+        <domain includeSubdomains="false">10.0.0.0</domain>
+        <domain includeSubdomains="false">172.16.0.0</domain>
+    </domain-config>
+    
+    <!-- Базовая конфигурация: используем системные сертификаты -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
+

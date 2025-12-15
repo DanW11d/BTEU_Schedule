@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">БТЭУ Расписание</string>
+    
+    <!-- A7.7: Состояния виджета -->
+    <string name="widget_no_data_message">Недоступно. Обнови расписание.</string>
+    <string name="widget_refresh_button">Обновить</string>
+    <string name="widget_loading_message">Обновление…</string>
+    <string name="widget_no_group_message">Выберите группу в приложении</string>
+    <string name="widget_open_button">Открыть</string>
+</resources>

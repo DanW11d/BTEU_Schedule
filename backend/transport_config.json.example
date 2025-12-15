@@ -1,0 +1,51 @@
+{
+  "email": {
+    "email": "your_email@gmail.com",
+    "password": "your_app_password",
+    "imap_server": "imap.gmail.com",
+    "imap_port": 993,
+    "smtp_server": "smtp.gmail.com",
+    "smtp_port": 465,
+    "use_ssl": true,
+    "use_tls": false,
+    "check_all_emails": true,
+    "subject_filter": null,
+    "sender_filter": null,
+    "label_filter": null
+  },
+  "request_detection": {
+    "min_keywords": 3,
+    "min_sections": 2,
+    "keywords": [
+      "заявка",
+      "заявка на перевозку",
+      "задача для водителя",
+      "перевозка",
+      "доставка",
+      "груз",
+      "маршрут"
+    ]
+  },
+  "1c_uat": {
+    "base_url": "http://uat-server/ut",
+    "username": "api_user",
+    "password": "api_password",
+    "api_path": "/hs/TransportAPI",
+    "auth_type": "basic",
+    "token": null,
+    "timeout": 30
+  },
+  "driver_notification": {
+    "driver_email": "driver-tasks@yourcompany.com",
+    "use_html": false,
+    "email_template": null
+  },
+  "check_interval": 300,
+  "max_emails_per_check": 10,
+  "min_confidence": 0.7,
+  "skip_non_requests": true,
+  "auto_archive": true,
+  "notify_on_error": true,
+  "admin_email": "admin@yourcompany.com"
+}
+

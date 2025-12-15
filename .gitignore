@@ -1,0 +1,40 @@
+# IDE
+.idea/
+.vscode/
+.cursor/
+.kotlin/
+
+# Android / Gradle
+.gradle/
+build/
+local.properties
+*.iml
+/captures
+.externalNativeBuild
+.cxx
+
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+build/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.env
+*.log
+venv/
+env/
+ENV/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Media downloader
+media_downloader_api/

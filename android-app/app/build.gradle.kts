@@ -7,6 +7,12 @@ plugins {
     id("kotlin-parcelize")
 }
 
+configurations.all {
+    resolutionStrategy {
+        force("androidx.security:security-crypto:1.1.0")
+    }
+}
+
 android {
     namespace = "com.example.bteu_schedule"
     compileSdk = 34
@@ -19,14 +25,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "com.example.bteu_schedule.HiltTestRunner"
-        
-        // Оптимизация ресурсов: оставляем только необходимые языки
-        // Плотности экрана обрабатываются через App Bundle splits и isShrinkResources
-        resourceConfigurations += listOf(
-            "ru",  // Русский язык
-            "be",  // Белорусский язык
-            "en"   // Английский язык (если используется)
-        )
     }
 
     buildTypes {
@@ -40,6 +38,8 @@ android {
         }
         debug {
             isMinifyEnabled = false
+            // Оптимизация для debug сборки - уменьшаем использование памяти
+            isDebuggable = true
         }
     }
     
@@ -96,6 +96,14 @@ android {
     buildFeatures {
         compose = true
     }
+
+    // Оптимизация обработки ресурсов для уменьшения использования памяти
+    androidResources {
+        // Оптимизация обработки ресурсов
+        noCompress += "tflite"
+        noCompress += "lite"
+        localeFilters.addAll(listOf("ru", "be", "en"))
+    }
 }
 
 dependencies {
@@ -127,13 +135,13 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     
     // Security Crypto for secure key storage
-    implementation("androidx.security:security-crypto:1.1.0-alpha06")
+    implementation("androidx.security:security-crypto:1.1.0")
     
     // Image Loading (Coil) для оптимизированной загрузки изображений
-    implementation("io.coil-kt.coil3:coil:3.0.4")
-    implementation("io.coil-kt.coil3:coil-compose:3.0.4")
-    implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.4")
-    
+    implementation("io.coil-kt.coil3:coil:3.0.0-alpha06")
+    implementation("io.coil-kt.coil3:coil-compose:3.0.0-alpha06")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.0-alpha06")
+
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
     
@@ -160,8 +168,8 @@ dependencies {
     testImplementation("androidx.arch.core:core-testing:2.2.0")
     
     // Hilt Testing
-    testImplementation("com.google.dagger:hilt-android-testing:2.51.1")
-    kaptTest("com.google.dagger:hilt-android-compiler:2.51.1")
+    testImplementation(libs.hilt.android.testing)
+    kaptTest(libs.hilt.compiler)
     
     // Android Instrumented Tests
     androidTestImplementation(libs.androidx.junit)
@@ -171,8 +179,8 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-manifest")
     
     // Hilt Android Testing
-    androidTestImplementation("com.google.dagger:hilt-android-testing:2.51.1")
-    kaptAndroidTest("com.google.dagger:hilt-android-compiler:2.51.1")
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.compiler)
     
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)

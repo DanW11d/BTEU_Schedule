@@ -86,10 +86,7 @@ class MainActivity : ComponentActivity() {
             com.example.bteu_schedule.utils.AppLogger.d("MainActivity", "enableEdgeToEdge выполнен")
             
             setContent {
-                val darkTheme = mainViewModel.themeManager.isDarkTheme()
-                
-                com.example.bteu_schedule.utils.AppLogger.d("MainActivity", "darkTheme получен: $darkTheme")
-                BTEU_ScheduleTheme(darkTheme = darkTheme) {
+                BTEU_ScheduleTheme(themeManager = mainViewModel.themeManager) {
                     BTEU_ScheduleApp(
                         themeManager = mainViewModel.themeManager,
                         languageManager = mainViewModel.languageManager,
@@ -563,8 +560,11 @@ fun BTEU_ScheduleApp(
 @Preview(showBackground = true)
 @Composable
 fun BTEU_ScheduleAppPreview() {
-    BTEU_ScheduleTheme(darkTheme = false) {
-        // Для превью нужен themeManager, но это только для превью
-        // BTEU_ScheduleApp(themeManager = ...)
+    // Для Preview используем MaterialTheme напрямую, так как ThemeManager требует инъекцию через Hilt
+    androidx.compose.material3.MaterialTheme {
+        androidx.compose.material3.Text(
+            text = "BTEU Schedule Preview",
+            modifier = Modifier.padding(16.dp)
+        )
     }
 }

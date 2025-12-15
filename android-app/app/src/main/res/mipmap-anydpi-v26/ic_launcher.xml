@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Фон используем из исходной иконки (синий градиент) -->
     <background android:drawable="@drawable/ic_launcher_background" />
-    <foreground android:drawable="@drawable/ic_launcher_foreground" />
-    <monochrome android:drawable="@drawable/ic_launcher_foreground" />
+    <!-- Ваше PNG изображение как foreground - ссылаемся напрямую на PNG файл -->
+    <foreground android:drawable="@drawable/ic_launcher_foreground_custom" />
 </adaptive-icon>

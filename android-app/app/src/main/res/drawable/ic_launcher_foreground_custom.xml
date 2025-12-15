@@ -2,7 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <bitmap
-            android:src="@drawable/app_icon"
+            android:src="@drawable/ic_launcher_foreground"
             android:gravity="fill" />
     </item>
 </layer-list>

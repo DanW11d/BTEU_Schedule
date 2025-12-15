@@ -1,9 +1,12 @@
 package com.example.bteu_schedule.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 private val DarkColorScheme = darkColorScheme(
     primary = DarkColors.Primary,
@@ -43,11 +46,17 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun BTEU_ScheduleTheme(
-    darkTheme: Boolean,
+    themeManager: ThemeManager,
     dynamicColor: Boolean = false, // Отключаем dynamicColor для использования нашей дизайн-системы
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val themeMode by themeManager.themeMode.collectAsState()
+    val useDarkTheme = when (themeMode) {
+        ThemeMode.LIGHT -> false
+        ThemeMode.DARK -> true
+        ThemeMode.SYSTEM -> isSystemInDarkTheme()
+    }
+    val colorScheme = if (useDarkTheme) DarkColorScheme else LightColorScheme
 
     MaterialTheme(
         colorScheme = colorScheme,

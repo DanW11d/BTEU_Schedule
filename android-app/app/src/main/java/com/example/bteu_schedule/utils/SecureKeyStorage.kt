@@ -19,7 +19,6 @@ import androidx.security.crypto.MasterKey
  */
 object SecureKeyStorage {
 
-    private const val MASTER_KEY_ALIAS = "_bteu_schedule_master_key"
     private const val PREFS_NAME = "secure_keys_encrypted"
 
     /**
@@ -28,7 +27,7 @@ object SecureKeyStorage {
     private fun getEncryptedPreferences(context: Context): SharedPreferences {
         return try {
             // Создаем MasterKey для шифрования
-            val masterKey = MasterKey.Builder(context, MASTER_KEY_ALIAS)
+            val masterKey = MasterKey.Builder(context)
                 .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
                 .build()
 
@@ -168,4 +167,3 @@ object SecureKeyStorage {
         }
     }
 }
-
